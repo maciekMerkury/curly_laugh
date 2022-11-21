@@ -3,24 +3,29 @@
 from sys import argv
 from random import randint
 
-VALID_LETTERS = {
+LEFT = {
     'S': 100,
-    'K': 100,
     'D': 50,
     'F': 50,
 }
 
-total_w = sum([VALID_LETTERS[k] for k in VALID_LETTERS])
+RIGHT = {
+    'K': 100,
+}
 
-def int_to_weighted_char(i: int) -> chr:
-    for k in VALID_LETTERS:
-        if i <= VALID_LETTERS[k]:
+l_w = sum([LEFT[k] for k in LEFT])
+r_w = sum([RIGHT[k] for k in RIGHT])
+
+def int_to_w_char(i: int, r: bool) -> chr:
+    map = RIGHT if r else LEFT
+    for k in map:
+        if i <= map[k]:
             return k
         else:
-            i -= VALID_LETTERS[k]
+            i -= map[k]
 
     print("how")
-    exit(1)
+    exit(2)
 
 
 if len(argv) == 1:
@@ -30,8 +35,12 @@ if len(argv) == 1:
 count = int(argv[1])
 
 str = ""
-for _ in range(count):
-    str += int_to_weighted_char(randint(0, total_w))
+for i in range(count):
+    # i % 2 == 0 starts from 0, thus the first char is from the right, per spec
+    right = i % 2 == 0
+    w = r_w if right else l_w
+
+    str += int_to_w_char(randint(0, w), right)
 
 print(str)
 
